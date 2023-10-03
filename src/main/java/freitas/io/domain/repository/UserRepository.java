@@ -3,11 +3,16 @@ package freitas.io.domain.repository;
 import freitas.io.domain.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Optional;
+import java.util.UUID;
+
 /**
  * @author Edson da Silva Freitas
  * {@code @created} 03/10/2023
  * {@code @project} api
  */
 
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<User, UUID> {
+    boolean existsByAccountNumber(String accountNumber);
+
 }
