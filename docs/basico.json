@@ -1,0 +1,25 @@
+{
+  "name": "Freitas",
+  "account": {
+    "number": "000000-0",
+    "agency": "00001",
+    "balance": 1325.67,
+    "Limit": 1000
+  },
+  "features": [
+    {
+      "icon": "URL",
+      "description": "Descricao da Feature"
+    }
+  ],
+  "card": {
+    "number": "Xxxxx xxxx xxxx 0000",
+    "limit": 1000
+  },
+  "news": [
+    {
+      "icon": "URL",
+      "description": "Descricdo da Novidade"
+    }
+  ]
+}
