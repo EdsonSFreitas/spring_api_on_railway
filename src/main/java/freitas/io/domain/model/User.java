@@ -1,6 +1,7 @@
 package freitas.io.domain.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 import java.util.List;
@@ -18,6 +19,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @NotBlank
     private String name;
 
     @OneToOne(cascade = CascadeType.ALL)

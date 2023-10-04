@@ -5,6 +5,7 @@ import freitas.io.domain.repository.UserRepository;
 import freitas.io.service.UserService;
 import jakarta.persistence.EntityExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,14 +43,12 @@ public class UserServiceImpl implements UserService {
         if (userToCreate.getId() == null) {
             // ID está ausente, então é uma criação de novo usuário
             if (repository.existsByAccountNumber(userToCreate.getAccount().getNumber())) {
-                throw new DuplicateKeyException(
-                        "This account number with ID " + userToCreate.getAccount().getNumber()
-                                + " already exists.");
+                throw new DuplicateKeyException(userToCreate.getAccount().getNumber());
             }
         } else {
             // ID não é nulo, então é uma atualização
             if (repository.existsById(userToCreate.getId())) {
-                throw new EntityExistsException("User with ID " + userToCreate.getId() + " already exists.");
+                throw new DataIntegrityViolationException(userToCreate.getId().toString());
             }
         }
         return repository.save(userToCreate);

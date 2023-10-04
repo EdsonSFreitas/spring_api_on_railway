@@ -3,6 +3,7 @@ package freitas.io.controller;
 import freitas.io.domain.model.User;
 import freitas.io.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,7 +39,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<User> create(@RequestBody User userToCreate) {
+    public ResponseEntity<User> create(@Valid @RequestBody  User userToCreate) {
         final User userCreated = service.create(userToCreate);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
