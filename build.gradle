@@ -35,6 +35,12 @@ dependencies {
 
 }
 
+tasks.jar {
+    manifest {
+        attributes["Main-class"] = "freitas.io.Application"
+    }
+}
+
 tasks.named('test') {
 	useJUnitPlatform()
 }
