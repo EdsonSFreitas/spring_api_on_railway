@@ -1,10 +1,10 @@
 {
-  "name": "Freitas",
+  "name": "Edson da Silva Freitas",
   "account": {
-    "number": "000000-0",
-    "agency": "00001",
+    "number": "000000-2",
+    "agency": "000123",
     "balance": 1325.67,
-    "Limit": 1000
+    "limit": 1000.00
   },
   "features": [
     {
@@ -13,13 +13,13 @@
     }
   ],
   "card": {
-    "number": "Xxxxx xxxx xxxx 0000",
-    "limit": 1000
+    "number": "Xxxxx xxxx xxxx 0003",
+    "limit": 1000.00
   },
   "news": [
     {
       "icon": "URL",
-      "description": "Descricdo da Novidade"
+      "description": "Descricao da Novidade"
     }
   ]
 }

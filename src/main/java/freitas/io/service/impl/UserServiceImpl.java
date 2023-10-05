@@ -3,12 +3,10 @@ package freitas.io.service.impl;
 import freitas.io.domain.model.User;
 import freitas.io.domain.repository.UserRepository;
 import freitas.io.service.UserService;
-import jakarta.persistence.EntityExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
 import java.util.Optional;
