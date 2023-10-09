@@ -1,6 +1,8 @@
 package freitas.io.domain.model;
 
 import jakarta.persistence.Entity;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -10,5 +12,7 @@ import lombok.Data;
  */
 @Data
 @Entity(name = "tb_news")
+@Builder
+@AllArgsConstructor
 public class News extends Common {
 }

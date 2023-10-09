@@ -2,10 +2,14 @@ package freitas.io.service.impl;
 
 import freitas.io.domain.model.User;
 import freitas.io.domain.repository.UserRepository;
+import freitas.io.dto.UserDTO;
 import freitas.io.service.UserService;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,9 +26,12 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
     private final UserRepository repository;
 
+    private final PasswordEncoder passwordEncoder;
+
     @Autowired
-    public UserServiceImpl(UserRepository repository) {
+    public UserServiceImpl(UserRepository repository, PasswordEncoder passwordEncoder) {
         this.repository = repository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -37,7 +44,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User create(User userToCreate) {
+    public UserDTO create(User userToCreate) {
         if (userToCreate.getId() == null) {
             // ID está ausente, então é uma criação de novo usuário
             if (repository.existsByAccountNumber(userToCreate.getAccount().getNumber())) {
@@ -49,6 +56,9 @@ public class UserServiceImpl implements UserService {
                 throw new DataIntegrityViolationException(userToCreate.getId().toString());
             }
         }
-        return repository.save(userToCreate);
+        userToCreate.setPassword(passwordEncoder.encode(userToCreate.getPassword()));
+        User createdUser = repository.save(userToCreate);
+
+        return new UserDTO(createdUser);
     }
 }

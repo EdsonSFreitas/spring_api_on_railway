@@ -116,7 +116,7 @@ classDiagram
 
 ## :wrench: Tecnologias utilizadas
 
-* Spring Boot Web
+* Spring Boot 3
 * Spring Data JPA
 * SpringDoc OpenAPI WebMVC UI
 * Lombok
@@ -124,6 +124,9 @@ classDiagram
 * Spring Boot Start Validation
 * PostgreSQL
 * Java 17
+* Railway
+* Spring Security 6
+* JWT auth0 4.4
 
 ## :clipboard: Executando o projeto
 

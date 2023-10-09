@@ -4,7 +4,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author Edson da Silva Freitas
@@ -13,6 +15,8 @@ import lombok.Data;
  */
 @Data
 @MappedSuperclass
+@NoArgsConstructor
+@AllArgsConstructor
 public abstract class Common {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

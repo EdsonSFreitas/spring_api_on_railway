@@ -1,14 +1,16 @@
 package freitas.io.controller;
 
 import freitas.io.domain.model.User;
+import freitas.io.dto.UserDTO;
 import freitas.io.service.UserService;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +24,9 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
-public class UserController {
+public class UserController implements Serializable {
+    @Serial
+    private static final long serialVersionUID = -7594531015430412292L;
 
     private final UserService service;
 
@@ -34,17 +38,25 @@ public class UserController {
     }
 
     @GetMapping()
+    public ResponseEntity<User> findByIdParam(@RequestParam(value = "id") UUID id) {
+        Optional<User> optionalUser = service.findById(id);
+        return optionalUser.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/search")
     public ResponseEntity<List<User>> findAll() {
         return ResponseEntity.ok(service.findAll());
     }
 
-    @PostMapping
-    public ResponseEntity<User> create(@Valid @RequestBody  User userToCreate) {
-        final User userCreated = service.create(userToCreate);
+
+    @PostMapping()
+    public ResponseEntity<UserDTO> create(@Valid @RequestBody User userToCreate) {
+        final UserDTO userDTO = service.create(userToCreate);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(userCreated.getId())
+                .buildAndExpand(userDTO.getId())
                 .toUri();
-        return ResponseEntity.created(location).body(userCreated);
+        return ResponseEntity.created(location).body(userDTO);
     }
 }

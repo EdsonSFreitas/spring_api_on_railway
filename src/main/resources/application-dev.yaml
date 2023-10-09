@@ -1,8 +1,22 @@
+logging:
+  level:
+    root: DEBUG
+
 spring:
+  output:
+    ansi:
+      enabled: always
+  security:
+    debug: true
+  logging:
+    level:
+      org:
+        springframework:
+          security: DEBUG
   datasource:
     url: jdbc:h2:mem:testdb
     username: sa
-    password:
+    password: masterPwd%2.7
   jpa:
     show-sql: true
     open-in-view: false
@@ -11,6 +25,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
   h2:
     console:
       enabled: true

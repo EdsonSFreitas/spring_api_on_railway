@@ -1,5 +1,6 @@
 package freitas.io.exceptions;
 
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,6 +12,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -19,7 +21,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.naming.AuthenticationException;
 import java.math.BigDecimal;
+import java.nio.file.AccessDeniedException;
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -43,16 +47,16 @@ public class ResourceExceptionHandler {
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<StandardError> database(DataIntegrityViolationException e, HttpServletRequest request) {
-        String error = "Data Integrity Violation Exception";
+    public ResponseEntity<StandardError> handlerDataIntegrityViolationException(DataIntegrityViolationException e, HttpServletRequest request) {
+        String error = "Data Integrity Violation Exception.";
         HttpStatus status = HttpStatus.UNPROCESSABLE_ENTITY;
         StandardError err = new StandardError(ZonedDateTime.now(), status.value(), error, e.getMessage(), request.getRequestURI());
         return ResponseEntity.status(status).body(err);
     }
 
     @ExceptionHandler(DuplicateKeyException.class)
-    public ResponseEntity<StandardError> database(DuplicateKeyException e, HttpServletRequest request) {
-        String error = "Duplicate Key Exception error, this account number already exists";
+    public ResponseEntity<StandardError> handlerDuplicateKeyException(DuplicateKeyException e, HttpServletRequest request) {
+        String error = "Duplicate Key Exception error, this account number already exists.";
         HttpStatus status = HttpStatus.UNPROCESSABLE_ENTITY;
         StandardError err = new StandardError(ZonedDateTime.now(), status.value(), error, e.getMessage(), request.getRequestURI());
         return ResponseEntity.status(status).body(err);
@@ -133,6 +137,38 @@ public class ResourceExceptionHandler {
         var message = "Unexpected server error, see the logs.";
         logger.error(message, unexpectedException);
         return new ResponseEntity<>(message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+
+    @ExceptionHandler(TokenExpiredException.class)
+    public ResponseEntity<StandardError> handleTokenExpiredException(TokenExpiredException ex, HttpServletRequest request) {
+        System.out.println("\t\t\t\n\n\nAcessou a excecao  token expirado");
+        String error = "The Token has expired.";
+        HttpStatus status = HttpStatus.UNAUTHORIZED;
+        StandardError err = new StandardError(ZonedDateTime.now(), status.value(), error, ex.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(status).body(err);
+    }
+
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity tratarErroBadCredentials(HttpServletRequest request) {
+        String error = "Invalid credential.";
+        HttpStatus status = HttpStatus.UNAUTHORIZED;
+        StandardError err = new StandardError(ZonedDateTime.now(), status.value(), error, null, null);
+        return ResponseEntity.status(status).body(err);
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity tratarErroAuthentication() {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Falha na autenticação");
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<StandardError> handleAccessDeniedException(AccessDeniedException e, HttpServletRequest request) {
+        String error = "Acesso negado";
+        HttpStatus status = HttpStatus.FORBIDDEN;
+        StandardError err = new StandardError(ZonedDateTime.now(), status.value(), error, e.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(status).body(err);
     }
 
 
