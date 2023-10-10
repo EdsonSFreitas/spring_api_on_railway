@@ -1,5 +1,6 @@
 package freitas.io.domain.model;
 
+import freitas.io.enums.RolesEnum;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -46,9 +47,21 @@ public class User implements UserDetails {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<News> news;
 
+    private Integer role;
+
+    public RolesEnum getRole() {
+        return RolesEnum.valueOf(role);
+    }
+
+    public void setRole(RolesEnum role) {
+        if(role != null) {
+            this.role = role.getCode();
+        }
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        return List.of(new SimpleGrantedAuthority(getRole().toString()));
     }
 
     @Override

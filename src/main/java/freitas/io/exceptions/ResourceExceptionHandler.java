@@ -38,6 +38,14 @@ public class ResourceExceptionHandler {
 
     private final Logger logger = LoggerFactory.getLogger(ResourceExceptionHandler.class);
 
+    @ExceptionHandler({ AuthenticationException.class })
+    public ResponseEntity<StandardError> handleAuthenticationException(Exception ex, HttpServletRequest request) {
+        String error = "Authentication failed at controller advice via classe ResourExceptionHanlder";
+        HttpStatus status = HttpStatus.UNAUTHORIZED;
+        StandardError err = new StandardError(ZonedDateTime.now(), status.value(), error, ex.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(status).body(err);
+    }
+
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<StandardError> resourceNotFound(ResourceNotFoundException e, HttpServletRequest request) {
         String error = "Resource not found";
@@ -75,11 +83,6 @@ public class ResourceExceptionHandler {
                         fieldError.getDefaultMessage()))
                 .toList();
         return ResponseEntity.badRequest().body(erros);
-    }
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity tratarErro500(Exception ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro: " + ex.getLocalizedMessage());
     }
 
 
@@ -132,18 +135,9 @@ public class ResourceExceptionHandler {
         return ResponseEntity.status(status).body(err);
     }
 
-    @ExceptionHandler(Throwable.class)
-    public ResponseEntity<String> handleUnexpectedException(Throwable unexpectedException) {
-        var message = "Unexpected server error, see the logs.";
-        logger.error(message, unexpectedException);
-        return new ResponseEntity<>(message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-
     @ExceptionHandler(TokenExpiredException.class)
     public ResponseEntity<StandardError> handleTokenExpiredException(TokenExpiredException ex, HttpServletRequest request) {
-        System.out.println("\t\t\t\n\n\nAcessou a excecao  token expirado");
-        String error = "The Token has expired.";
+        String error = "The Token has expired. classe ResourceExceptionHandler";
         HttpStatus status = HttpStatus.UNAUTHORIZED;
         StandardError err = new StandardError(ZonedDateTime.now(), status.value(), error, ex.getMessage(), request.getRequestURI());
         return ResponseEntity.status(status).body(err);
@@ -151,25 +145,41 @@ public class ResourceExceptionHandler {
 
 
     @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity tratarErroBadCredentials(HttpServletRequest request) {
+    public ResponseEntity<StandardError> tratarErroBadCredentials(HttpServletRequest request) {
         String error = "Invalid credential.";
         HttpStatus status = HttpStatus.UNAUTHORIZED;
         StandardError err = new StandardError(ZonedDateTime.now(), status.value(), error, null, null);
         return ResponseEntity.status(status).body(err);
     }
 
-    @ExceptionHandler(AuthenticationException.class)
+/*    @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity tratarErroAuthentication() {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Falha na autenticação");
-    }
+    }*/
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<StandardError> handleAccessDeniedException(AccessDeniedException e, HttpServletRequest request) {
-        String error = "Acesso negado";
+        String error = "Acesso negado.";
         HttpStatus status = HttpStatus.FORBIDDEN;
         StandardError err = new StandardError(ZonedDateTime.now(), status.value(), error, e.getMessage(), request.getRequestURI());
         return ResponseEntity.status(status).body(err);
     }
+
+  /*  @ExceptionHandler(Exception.class)
+    public ResponseEntity<StandardError> tratarErro500(Exception ex, HttpServletRequest request) {
+        // return ResponseEntity.status(HttpStatus.NO).body("Erro: " + ex.getLocalizedMessage());
+        String error = "INTERNAL_SERVER_ERROR.";
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        StandardError err = new StandardError(ZonedDateTime.now(), status.value(), error, ex.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(status).body(err);
+    }*/
+
+    /*    @ExceptionHandler(Throwable.class)
+    public ResponseEntity<String> handleUnexpectedException(Throwable unexpectedException) {
+        var message = "Unexpected server error, see the logs.";
+        logger.error(message, unexpectedException);
+        return new ResponseEntity<>(message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }*/
 
 
     @Getter

@@ -2,6 +2,7 @@ package freitas.io.config;
 
 import freitas.io.domain.model.*;
 import freitas.io.domain.repository.UserRepository;
+import freitas.io.enums.RolesEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
@@ -55,6 +56,7 @@ public class TestConfig implements CommandLineRunner {
                         .build())
                 .news(List.of(newsTest))
                 .features(List.of(fetuaresTest))
+                .role(RolesEnum.ROLE_USER.getCode())
                 .build();
 
         userRepository.save(userTest);

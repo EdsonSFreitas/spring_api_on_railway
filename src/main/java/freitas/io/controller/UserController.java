@@ -2,7 +2,9 @@ package freitas.io.controller;
 
 import freitas.io.domain.model.User;
 import freitas.io.dto.UserDTO;
+import freitas.io.enums.RolesEnum;
 import freitas.io.service.UserService;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -45,6 +47,7 @@ public class UserController implements Serializable {
     }
 
     @GetMapping("/search")
+    @RolesAllowed("ROLE_ADMIN")
     public ResponseEntity<List<User>> findAll() {
         return ResponseEntity.ok(service.findAll());
     }
