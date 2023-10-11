@@ -24,7 +24,7 @@ public class TokenService {
                 .withSubject(user.getUsername())
                 .withClaim("id", user.getId().toString())
                 .withExpiresAt(Date.from(LocalDateTime.now()
-                        .plusMinutes(1)
+                        .plusMinutes(20)
                         .toInstant(ZoneOffset.of("-03:00"))))
                 .sign(Algorithm.HMAC256("freitas.io"));
         //TODO Salvar secret como variavel de ambiente ao inves de usar como hardcoded

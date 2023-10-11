@@ -47,7 +47,7 @@ public class UserController implements Serializable {
     }
 
     @GetMapping("/search")
-    @RolesAllowed("ROLE_ADMIN")
+    @RolesAllowed({"ROLE_USER", "ROLE_ADMIN"})
     public ResponseEntity<List<User>> findAll() {
         return ResponseEntity.ok(service.findAll());
     }
