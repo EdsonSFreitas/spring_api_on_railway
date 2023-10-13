@@ -3,8 +3,11 @@ logging:
     root: INFO
     org.springframework.security: DEBUG
 
-
 spring:
+  security:
+    web:
+      csrf:
+        enabled: true
   output:
     ansi:
       enabled: always
@@ -29,3 +32,16 @@ spring:
       settings:
         trace: false
         web-allow-others: false
+
+module-name: Sistema de Vendas
+api-version: 0.9.8
+api-description: API do Cloud Railway
+api-contact-name: Edson Freitas
+api-contact-url: http://github.com/edsonsfreitas
+api-contact-email: edson.s.freitas@gmail.com
+springdoc:
+  api-docs:
+    resolve-schema-properties: true
+    swagger-ui:
+        csrf:
+          enabled=true

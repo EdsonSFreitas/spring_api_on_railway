@@ -3,6 +3,9 @@ package freitas.io.controller;
 import freitas.io.domain.model.User;
 import freitas.io.dto.LoginDTO;
 import freitas.io.security.TokenService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,7 +31,13 @@ public class AuthController {
     @Autowired
     TokenService tokenService;
 
-
+    @Operation(summary = "Authentication", description = "Login")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "404", description = "Not Found"),
+            @ApiResponse(responseCode = "405", description = "Method Not Allowed")}
+    )
     @PostMapping("/login")
     public String auth(@RequestBody LoginDTO loginDTO) {
         final UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =

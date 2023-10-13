@@ -4,6 +4,9 @@ import freitas.io.domain.model.User;
 import freitas.io.dto.UserDTO;
 import freitas.io.enums.RolesEnum;
 import freitas.io.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -32,12 +35,24 @@ public class UserController implements Serializable {
 
     private final transient UserService service;
 
+    @Operation(summary = "Find All", description = "find all users")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "404", description = "Not Found"),
+            @ApiResponse(responseCode = "405", description = "Method Not Allowed")}
+    )
     @GetMapping("/search")
     @RolesAllowed({"ADMIN"})
     public ResponseEntity<List<User>> findAll() {
         return ResponseEntity.ok(service.findAll());
     }
 
+    @Operation(summary = "Find User by UUID with Path Variable", description = "Find user by UUID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "405", description = "Method Not Allowed")}
+    )
     @GetMapping("/{id}")
     public ResponseEntity<User> findById(@PathVariable UUID id) {
         Optional<User> optionalUser = service.findById(id);
@@ -45,6 +60,11 @@ public class UserController implements Serializable {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @Operation(summary = "Find User by UUID with Parameter", description = "Find user by UUID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "405", description = "Method Not Allowed")}
+    )
     @GetMapping()
     @RolesAllowed({"USER"})
     public ResponseEntity<User> findByIdParam(@RequestParam(value = "id") UUID id) {
@@ -54,6 +74,11 @@ public class UserController implements Serializable {
     }
 
 
+    @Operation(summary = "Register new User", description = "Create a new user in the system")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "405", description = "Method Not Allowed")}
+    )
     @PostMapping()
     public ResponseEntity<UserDTO> create(@Valid @RequestBody User userToCreate) {
         final UserDTO userDTO = service.create(userToCreate);
