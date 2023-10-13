@@ -33,7 +33,7 @@ spring:
         trace: false
         web-allow-others: false
 
-module-name: Sistema de Vendas
+module-name: API no serviço de Cloud da Railway
 api-version: 0.9.8
 api-description: API do Cloud Railway
 api-contact-name: Edson Freitas
