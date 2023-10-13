@@ -21,13 +21,16 @@ import java.util.List;
 
 @Configuration
 @Profile("dev")
-public class TestConfig implements CommandLineRunner {
-    @Autowired
-    private UserRepository userRepository;
+public class CargaInicial implements CommandLineRunner {
+
+    UserRepository userRepository;
+    PasswordEncoder passwordEncoder;
 
     @Autowired
-    @Lazy
-    private PasswordEncoder passwordEncoder;
+    public CargaInicial(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     @Override
     public void run(String... args) throws Exception {

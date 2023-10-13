@@ -30,7 +30,13 @@ public class UserController implements Serializable {
     @Serial
     private static final long serialVersionUID = -7594531015430412292L;
 
-    private final UserService service;
+    private final transient UserService service;
+
+    @GetMapping("/search")
+    @RolesAllowed({"ADMIN"})
+    public ResponseEntity<List<User>> findAll() {
+        return ResponseEntity.ok(service.findAll());
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<User> findById(@PathVariable UUID id) {
@@ -40,16 +46,11 @@ public class UserController implements Serializable {
     }
 
     @GetMapping()
+    @RolesAllowed({"USER"})
     public ResponseEntity<User> findByIdParam(@RequestParam(value = "id") UUID id) {
         Optional<User> optionalUser = service.findById(id);
         return optionalUser.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
-    }
-
-    @GetMapping("/search")
-    @RolesAllowed({"ROLE_USER", "ROLE_ADMIN"})
-    public ResponseEntity<List<User>> findAll() {
-        return ResponseEntity.ok(service.findAll());
     }
 
 

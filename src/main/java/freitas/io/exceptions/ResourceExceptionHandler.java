@@ -25,6 +25,7 @@ import java.math.BigDecimal;
 import java.nio.file.AccessDeniedException;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * @author Edson da Silva Freitas
@@ -38,49 +39,58 @@ public class ResourceExceptionHandler {
 
     private final Logger logger = LoggerFactory.getLogger(ResourceExceptionHandler.class);
 
-    @ExceptionHandler({AuthenticationException.class})
-    public ResponseEntity<StandardError> handleAuthenticationException(Exception ex, HttpServletRequest request) {
-        String error = "Authentication failed at controller advice via classe ResourExceptionHanlder";
-        HttpStatus status = HttpStatus.UNAUTHORIZED;
-        StandardError err = new StandardError(ZonedDateTime.now(), status.value(), error, ex.getMessage(), request.getRequestURI());
+    private static ResponseEntity<StandardError> exceptionMessage(String error, HttpStatus status, Supplier<String> eMessageSupplier, HttpServletRequest request) {
+        StandardError err = new StandardError(ZonedDateTime.now(), status.value(), error, eMessageSupplier.get(), request.getRequestURI());
         return ResponseEntity.status(status).body(err);
+    }
+
+    @ExceptionHandler({AuthenticationException.class})
+    public ResponseEntity<StandardError> handleAuthenticationException(Exception e, HttpServletRequest request) {
+        return
+                exceptionMessage("Authentication failed at controller advice",
+                        HttpStatus.UNAUTHORIZED,
+                        e::getMessage,
+                        request);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<StandardError> handleAccessDeniedException(AccessDeniedException e, HttpServletRequest request) {
-        String error = "Acesso negado.";
-        HttpStatus status = HttpStatus.FORBIDDEN;
-        StandardError err = new StandardError(ZonedDateTime.now(), status.value(), error, e.getMessage(), request.getRequestURI());
-        return ResponseEntity.status(status).body(err);
+        return
+                exceptionMessage("Acesso negado.",
+                        HttpStatus.FORBIDDEN,
+                        e::getMessage,
+                        request);
     }
-
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<StandardError> resourceNotFound(ResourceNotFoundException e, HttpServletRequest request) {
-        String error = "Resource not found";
-        HttpStatus status = HttpStatus.NOT_FOUND;
-        StandardError err = new StandardError(ZonedDateTime.now(), status.value(), error, e.getMessage(), request.getRequestURI());
-        return ResponseEntity.status(status).body(err);
+        return
+                exceptionMessage("Resource not found.",
+                        HttpStatus.NOT_FOUND,
+                        e::getMessage,
+                        request);
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<StandardError> handlerDataIntegrityViolationException(DataIntegrityViolationException e, HttpServletRequest request) {
-        String error = "Data Integrity Violation Exception.";
-        HttpStatus status = HttpStatus.UNPROCESSABLE_ENTITY;
-        StandardError err = new StandardError(ZonedDateTime.now(), status.value(), error, e.getMessage(), request.getRequestURI());
-        return ResponseEntity.status(status).body(err);
+        return
+                exceptionMessage("Data Integrity Violation Exception.",
+                        HttpStatus.UNPROCESSABLE_ENTITY,
+                        e::getMessage,
+                        request);
     }
 
     @ExceptionHandler(DuplicateKeyException.class)
     public ResponseEntity<StandardError> handlerDuplicateKeyException(DuplicateKeyException e, HttpServletRequest request) {
-        String error = "Duplicate Key Exception error, this account number already exists.";
-        HttpStatus status = HttpStatus.UNPROCESSABLE_ENTITY;
-        StandardError err = new StandardError(ZonedDateTime.now(), status.value(), error, e.getMessage(), request.getRequestURI());
-        return ResponseEntity.status(status).body(err);
+        return
+                exceptionMessage("Duplicate Key Exception error, this account number already exists.",
+                        HttpStatus.UNPROCESSABLE_ENTITY,
+                        e::getMessage,
+                        request);
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity tratarErro404() {
+    public ResponseEntity<StandardError> tratarErro404() {
         return ResponseEntity.notFound().build();
     }
 
@@ -94,22 +104,23 @@ public class ResourceExceptionHandler {
         return ResponseEntity.badRequest().body(erros);
     }
 
-
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
-    public ResponseEntity<StandardError> handleMethodNotAllowed(HttpRequestMethodNotSupportedException ex, HttpServletRequest request) {
-        String error = "Meio de requisição não suportado: " + ex.getMessage();
-        HttpStatus status = HttpStatus.METHOD_NOT_ALLOWED;
-        StandardError err = new StandardError(ZonedDateTime.now(), status.value(), error, ex.getMessage(), request.getRequestURI());
-        return ResponseEntity.status(status).body(err);
+    public ResponseEntity<StandardError> handleMethodNotAllowed(HttpRequestMethodNotSupportedException e, HttpServletRequest request) {
+        return
+                exceptionMessage("Meio de requisição não suportado.",
+                        HttpStatus.METHOD_NOT_ALLOWED,
+                        e::getMessage,
+                        request);
     }
 
     @ExceptionHandler(BusinessRuleException.class)
-    public ResponseEntity<StandardError> handleBusinessRuleException(BusinessRuleException ex, HttpServletRequest request) {
-        String error = "Error business rule: " + ex.getMessage();
-        HttpStatus status = HttpStatus.BAD_REQUEST;
-        StandardError err = new StandardError(ZonedDateTime.now(), status.value(), error, ex.getMessage(), request.getRequestURI());
-        return ResponseEntity.status(status).body(err);
+    public ResponseEntity<StandardError> handleBusinessRuleException(BusinessRuleException e, HttpServletRequest request) {
+        return
+                exceptionMessage("Error business rule.",
+                        HttpStatus.BAD_REQUEST,
+                        e::getMessage,
+                        request);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
@@ -128,13 +139,13 @@ public class ResourceExceptionHandler {
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
-    public ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex, HttpServletRequest request) {
-        String error = "Corpo da requisição ausente ou inválido";
-        HttpStatus status = HttpStatus.BAD_REQUEST;
-        StandardError err = new StandardError(ZonedDateTime.now(), status.value(), error, ex.getMessage(), request.getRequestURI());
-        return ResponseEntity.status(status).body(err);
+    public ResponseEntity<StandardError> handleMissingServletRequestParameter(MissingServletRequestParameterException e, HttpServletRequest request) {
+        return
+                exceptionMessage("Corpo da requisição ausente ou inválido.",
+                        HttpStatus.BAD_REQUEST,
+                        e::getMessage,
+                        request);
     }
-
 
     @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<StandardError> handleResponseStatusException(ResponseStatusException ex, HttpServletRequest request) {
@@ -143,30 +154,6 @@ public class ResourceExceptionHandler {
         StandardError err = new StandardError(ZonedDateTime.now(), status.value(), error, ex.getMessage(), request.getRequestURI());
         return ResponseEntity.status(status).body(err);
     }
-
-/*    @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity tratarErroAuthentication() {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Falha na autenticação");
-    }*/
-
-
-
-  /*  @ExceptionHandler(Exception.class)
-    public ResponseEntity<StandardError> tratarErro500(Exception ex, HttpServletRequest request) {
-        // return ResponseEntity.status(HttpStatus.NO).body("Erro: " + ex.getLocalizedMessage());
-        String error = "INTERNAL_SERVER_ERROR.";
-        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-        StandardError err = new StandardError(ZonedDateTime.now(), status.value(), error, ex.getMessage(), request.getRequestURI());
-        return ResponseEntity.status(status).body(err);
-    }*/
-
-    /*    @ExceptionHandler(Throwable.class)
-    public ResponseEntity<String> handleUnexpectedException(Throwable unexpectedException) {
-        var message = "Unexpected server error, see the logs.";
-        logger.error(message, unexpectedException);
-        return new ResponseEntity<>(message, HttpStatus.INTERNAL_SERVER_ERROR);
-    }*/
-
 
     @Getter
     private static class DadosErroValidacao {

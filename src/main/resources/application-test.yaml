@@ -1,8 +1,7 @@
 logging:
   level:
     root: INFO
-    org.springframework.security: DEBUG
-
+    org.springframework.security: INFO
 
 spring:
   output:
@@ -10,14 +9,14 @@ spring:
       enabled: always
 
   datasource:
-    url: jdbc:h2:mem:testdb
+    url: jdbc:h2:mem:testjunit
     username: sa
     password: masterPwd%2.7
   jpa:
     show-sql: true
     open-in-view: false
     hibernate:
-      ddl-auto: update # validate | update | create | create-drop
+      ddl-auto: create # validate | update | create | create-drop
     properties:
       hibernate:
         format_sql: true
