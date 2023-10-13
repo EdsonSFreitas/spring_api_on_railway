@@ -6,7 +6,6 @@ import freitas.io.enums.RolesEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -42,7 +41,7 @@ public class CargaInicial implements CommandLineRunner {
         fetuaresTest.setDescription("Feature teste");
         fetuaresTest.setIcon("icon teste");
 
-        User userTest =  User.builder()
+        User userTest = User.builder()
                 .id(null)
                 .login("edson.s.freitas")
                 .password(passwordEncoder.encode("123456"))

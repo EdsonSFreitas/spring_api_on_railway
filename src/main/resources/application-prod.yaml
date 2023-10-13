@@ -7,4 +7,4 @@ spring:
     open-in-view: false
     hibernate:
       #ddl-auto: create
-      ddl-auto: validate
+      ddl-auto: ${DLLTYPE}
