@@ -1,13 +1,15 @@
 package freitas.io.dto;
 
 import freitas.io.domain.model.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.validation.constraints.NotEmpty;
+import lombok.*;
 
 import java.util.List;
 import java.util.UUID;
+
+import static java.util.Collections.emptyList;
+import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
 
 /**
  * @author Edson da Silva Freitas
@@ -19,8 +21,10 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class UserDTO {
     private UUID id;
+    @NotEmpty(message = "{field.login.obrigatorio}")
     private String login;
     private String name;
     private Account account;

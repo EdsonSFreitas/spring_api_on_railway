@@ -3,9 +3,10 @@ package freitas.io.service.impl;
 import freitas.io.domain.model.User;
 import freitas.io.domain.repository.UserRepository;
 import freitas.io.dto.UserDTO;
+import freitas.io.exceptions.BusinessRuleException;
+import freitas.io.exceptions.ResourceNotFoundException;
 import freitas.io.service.UserService;
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
@@ -24,8 +25,8 @@ import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
+    private static final Long UNCHANGEABLE_USER_ID = 1L;
     private final UserRepository repository;
-
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -34,16 +35,18 @@ public class UserServiceImpl implements UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @Override
-    public Optional<User> findById(UUID id) {
-        return repository.findById(id);
+
+    public Optional<UserDTO> findById(UUID id) {
+        final User user = this.repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
+        UserDTO userDTO = new UserDTO(user);
+        return Optional.of(userDTO);
     }
+
 
     public List<User> findAll() {
         return repository.findAll();
     }
 
-    @Override
     public UserDTO create(User userToCreate) {
         if (userToCreate.getId() == null) {
             // ID está ausente, então é uma criação de novo usuário
@@ -60,5 +63,41 @@ public class UserServiceImpl implements UserService {
         User createdUser = repository.save(userToCreate);
 
         return new UserDTO(createdUser);
+    }
+
+    @Override
+    public Optional<UserDTO> update(UUID id, UserDTO userToUpdate) {
+        this.validateChangeableId(id, "updated");
+        userToUpdate.setId(id);
+        final User dbUser = this.repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
+        if (!dbUser.getId().equals(userToUpdate.getId())) {
+            throw new BusinessRuleException("Update IDs must be the same.");
+        }
+
+        ModelMapper modelMapper = new ModelMapper();
+        modelMapper.getConfiguration().setSkipNullEnabled(true);
+        modelMapper.map(userToUpdate, dbUser);
+/*
+        dbUser.setName(userToUpdate.getName());
+        dbUser.setAccount(userToUpdate.getAccount());
+        dbUser.setCard(userToUpdate.getCard());
+        dbUser.setFeatures(userToUpdate.getFeatures());
+        dbUser.setNews(userToUpdate.getNews());*/
+
+        final User saved = this.repository.save(dbUser);
+        return Optional.of(new UserDTO(saved));
+    }
+
+
+    public void delete(UUID id) {
+        this.validateChangeableId(id, "deleted");
+        final User dbUser = this.repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
+        this.repository.delete(dbUser);
+    }
+
+    private void validateChangeableId(UUID id, String operation) {
+        if (UNCHANGEABLE_USER_ID.equals(id)) {
+            throw new BusinessRuleException("User with ID %d can not be %s.".formatted(UNCHANGEABLE_USER_ID, operation));
+        }
     }
 }

@@ -1,8 +1,10 @@
 package freitas.io.domain.model;
 
 import freitas.io.enums.RolesEnum;
+import freitas.io.security.password.PasswordComplexity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -28,10 +30,11 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @NotBlank
+    @NotEmpty(message = "{field.login.obrigatorio}")
     private String login;
 
-    @NotBlank
+    @NotEmpty(message = "{field.senha.obrigatorio}")
+    @PasswordComplexity(minLength = 3, requireLowerCase = true, requireUpperCase = true, requireSpecialChar = true, requireNumber = true, message = "{field.senha.complexidade}")
     private String password;
 
     @NotBlank

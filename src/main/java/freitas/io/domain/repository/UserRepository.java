@@ -16,5 +16,9 @@ import java.util.UUID;
 public interface UserRepository extends JpaRepository<User, UUID> {
     boolean existsByAccountNumber(String accountNumber);
 
+    boolean existsByCardNumber(String number);
+
     User findByLogin(String login);
+/*
+    void delete(Optional<User> dbUser);*/
 }

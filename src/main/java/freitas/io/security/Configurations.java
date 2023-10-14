@@ -97,6 +97,7 @@ public class Configurations {
                 )
                 .csrf(csrf -> csrf.ignoringRequestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")))
                 .csrf(csrf -> csrf.ignoringRequestMatchers(mvcRequestMatcherLogin))
+                .csrf(csrf -> csrf.ignoringRequestMatchers(mvc.pattern(HttpMethod.PUT, "/api/v1/users/**")))
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((mvAauthorize) -> mvAauthorize
                         .requestMatchers(mvcRequestMatcherLogin).permitAll()

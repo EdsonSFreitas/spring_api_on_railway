@@ -4,7 +4,6 @@ import freitas.io.domain.model.User;
 import freitas.io.dto.UserDTO;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -13,11 +12,11 @@ import java.util.UUID;
  * {@code @project} api
  */
 
-public interface UserService {
+public interface UserService extends CRUDService <UUID, User, UserDTO> {
 
-    Optional<User> findById(UUID id);
+    //UserDTO findById(UUID id);
 
-    UserDTO create(User userToCreate);
+    //UserDTO create(User userToCreate);
 
     List<User> findAll();
 }

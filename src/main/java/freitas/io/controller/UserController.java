@@ -54,9 +54,9 @@ public class UserController implements Serializable {
             @ApiResponse(responseCode = "405", description = "Method Not Allowed")}
     )
     @GetMapping("/{id}")
-    public ResponseEntity<User> findById(@PathVariable UUID id) {
-        Optional<User> optionalUser = service.findById(id);
-        return optionalUser.map(ResponseEntity::ok)
+    public ResponseEntity<UserDTO> findById(@PathVariable UUID id) {
+        final Optional<UserDTO> userDTO = service.findById(id);
+        return userDTO.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
@@ -67,8 +67,8 @@ public class UserController implements Serializable {
     )
     @GetMapping()
     @RolesAllowed({"USER"})
-    public ResponseEntity<User> findByIdParam(@RequestParam(value = "id") UUID id) {
-        Optional<User> optionalUser = service.findById(id);
+    public ResponseEntity<UserDTO> findByIdParam(@RequestParam(value = "id") UUID id) {
+        Optional<UserDTO> optionalUser = service.findById(id);
         return optionalUser.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -87,5 +87,29 @@ public class UserController implements Serializable {
                 .buildAndExpand(userDTO.getId())
                 .toUri();
         return ResponseEntity.created(location).body(userDTO);
+    }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Update a user", description = "Update the data of an existing user based on its ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User updated successfully"),
+            @ApiResponse(responseCode = "404", description = "User not found"),
+            @ApiResponse(responseCode = "422", description = "Invalid user data provided")
+    })
+    public ResponseEntity<UserDTO> update(@PathVariable UUID id, @RequestBody UserDTO userToUpdate) {
+        final Optional<UserDTO> updatedUser = service.update(id, userToUpdate);
+        return updatedUser.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping()
+    @Operation(summary = "Delete a user", description = "Delete an existing user based on its ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "User deleted successfully"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "404", description = "User not found")
+    })
+    public ResponseEntity<Void> delete(@RequestParam(value = "id") UUID id) {
+        service.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
