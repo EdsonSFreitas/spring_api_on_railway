@@ -1,6 +1,9 @@
 package freitas.io.domain.repository;
 
 import freitas.io.domain.model.User;
+import freitas.io.dto.UserDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -19,6 +22,5 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     boolean existsByCardNumber(String number);
 
     User findByLogin(String login);
-/*
-    void delete(Optional<User> dbUser);*/
+
 }

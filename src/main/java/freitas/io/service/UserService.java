@@ -2,6 +2,9 @@ package freitas.io.service;
 
 import freitas.io.domain.model.User;
 import freitas.io.dto.UserDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.UUID;
@@ -12,11 +15,9 @@ import java.util.UUID;
  * {@code @project} api
  */
 
-public interface UserService extends CRUDService <UUID, User, UserDTO> {
-
-    //UserDTO findById(UUID id);
-
-    //UserDTO create(User userToCreate);
+public interface UserService extends CRUDService<UUID, User, UserDTO> {
 
     List<User> findAll();
+
+    Page<UserDTO> findAllOrderBy(Pageable pageable);
 }

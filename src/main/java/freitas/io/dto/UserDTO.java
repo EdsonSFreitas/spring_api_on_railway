@@ -4,6 +4,8 @@ import freitas.io.domain.model.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
 
@@ -19,10 +21,12 @@ import static java.util.stream.Collectors.toList;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserDTO {
+public class UserDTO implements Serializable {
+    @Serial
+    private static final long serialVersionUID = -4273655462694315464L;
+
     private UUID id;
     @NotEmpty(message = "{field.login.obrigatorio}")
     private String login;
@@ -40,5 +44,8 @@ public class UserDTO {
         this.card = user.getCard();
         this.features = user.getFeatures();
         this.news = user.getNews();
+    }
+
+    public UserDTO(UserDTO userDTO) {
     }
 }

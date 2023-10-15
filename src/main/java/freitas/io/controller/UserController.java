@@ -10,6 +10,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -35,6 +39,8 @@ public class UserController implements Serializable {
 
     private final transient UserService service;
 
+    int limitPageSize = 100;
+
     @Operation(summary = "Find All", description = "find all users")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success"),
@@ -43,9 +49,13 @@ public class UserController implements Serializable {
             @ApiResponse(responseCode = "405", description = "Method Not Allowed")}
     )
     @GetMapping("/search")
-    @RolesAllowed({"ADMIN"})
-    public ResponseEntity<List<User>> findAll() {
-        return ResponseEntity.ok(service.findAll());
+    @RolesAllowed({"USER", "ADMIN"})
+    public ResponseEntity<Page<UserDTO>> getAllUsersOrderedBy(Pageable pageable) {
+        if (pageable.getPageSize() > limitPageSize) {
+            pageable = PageRequest.of(pageable.getPageNumber(), limitPageSize, pageable.getSort());
+        }
+        Page<UserDTO> users = service.findAllOrderBy(pageable);
+        return ResponseEntity.ok(users);
     }
 
     @Operation(summary = "Find User by UUID with Path Variable", description = "Find user by UUID")

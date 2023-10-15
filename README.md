@@ -202,10 +202,11 @@ classDiagram
 ## :books: Funcionalidades originais do projeto com Spring Boot versão 3
 - Endpoint para inserir usuário e conta bancária e um endpoint para buscar usuário por id.
 
-## :rocket: Funcionalidades que implementei como forma de estudo e prática de Spring Boot
+## :rocket: Funcionalidades que implementei como forma de estudo e prática de Spring Framework
 - Tratamento de erros via ResourceExceptionHandler;
 - Validação dos campos;
-- Endpoint para exibir todos os cadastros de usuários (ainda será implementado o page, sort e limit);
+- Validação da complexidade da senha por meio de anotação personalizada;
+- Endpoint para exibir todos os cadastros de usuários usando page/size/sort e limit retornando DTO
 - JWT - Autenticação e Autorização
 - HandlerExceptionResolver para capturar e personalizar as exceções do Spring Security
 - Testes unitários com Junit e Mokito
@@ -223,7 +224,7 @@ classDiagram
 * Railway
 * Spring Security 6
 * JWT auth0 4.4
-* JUnit
+* JUnit 5
 * Mokito
 
 ## :clipboard: Executando o projeto

@@ -10,12 +10,17 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.domain.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * @author Edson da Silva Freitas
@@ -77,13 +82,6 @@ public class UserServiceImpl implements UserService {
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setSkipNullEnabled(true);
         modelMapper.map(userToUpdate, dbUser);
-/*
-        dbUser.setName(userToUpdate.getName());
-        dbUser.setAccount(userToUpdate.getAccount());
-        dbUser.setCard(userToUpdate.getCard());
-        dbUser.setFeatures(userToUpdate.getFeatures());
-        dbUser.setNews(userToUpdate.getNews());*/
-
         final User saved = this.repository.save(dbUser);
         return Optional.of(new UserDTO(saved));
     }
@@ -95,9 +93,19 @@ public class UserServiceImpl implements UserService {
         this.repository.delete(dbUser);
     }
 
+    public Page<UserDTO> findAllOrderBy(Pageable pageable) {
+        Page<User> pageResult = repository.findAll(pageable);
+        List<UserDTO> dtos = pageResult.getContent()
+                .stream()
+                .map(UserDTO::new)
+                .collect(Collectors.toList());
+        return new PageImpl<>(dtos, pageable, pageResult.getTotalElements());
+    }
+
     private void validateChangeableId(UUID id, String operation) {
         if (UNCHANGEABLE_USER_ID.equals(id)) {
             throw new BusinessRuleException("User with ID %d can not be %s.".formatted(UNCHANGEABLE_USER_ID, operation));
         }
     }
+
 }

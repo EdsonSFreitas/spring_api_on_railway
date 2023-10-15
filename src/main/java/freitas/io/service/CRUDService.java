@@ -1,6 +1,8 @@
 package freitas.io.service;
 
 import freitas.io.dto.UserDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,4 +20,6 @@ public interface CRUDService<ID, T, DTO> {
     DTO create(T entity);
     Optional<DTO> update(ID id, DTO entity);
     void delete(ID id);
+
+
 }
