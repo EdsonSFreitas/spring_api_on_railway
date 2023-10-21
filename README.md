@@ -1,4 +1,4 @@
-<h1 align="center">RESTFul API Spring boot no Railway</h1>
+<h1 align="center">RESTFul API Spring boot no serviço de hospedagem Railway</h1>
 
 ## :memo: Resumo do projeto
 Projeto de uma simples API para deploy da aplicação e do banco PostgreSQL no serviço de cloud da Railway. Para criar esse projeto como prática não precisei de cartão de crédito ou assinar qualquer plano, o serviço fornece 5 doláres para usufruirmos dos recursos como laboratório.
@@ -246,4 +246,4 @@ Pré-requisitos:
 * Em andamento
 
 ## :framed_picture: Screnshoot
-![Descrição da imagem](docs/Swagger-2023-10-13%2011-01-52.png)
+![Descrição da imagem](docs/Swagger-2023-10-21.png)
