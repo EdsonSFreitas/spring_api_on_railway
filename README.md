@@ -206,10 +206,11 @@ classDiagram
 - Tratamento de erros via ResourceExceptionHandler;
 - Validação dos campos;
 - Validação da complexidade da senha por meio de anotação personalizada;
-- Endpoint para exibir todos os cadastros de usuários usando page/size/sort e limit retornando DTO
-- JWT - Autenticação e Autorização
-- HandlerExceptionResolver para capturar e personalizar as exceções do Spring Security
-- Testes unitários com Junit e Mokito
+- Endpoint para exibir todos os cadastros de usuários usando page/size/sort e limit retornando DTO;
+- JWT - Autenticação e Autorização;
+- HandlerExceptionResolver para capturar e personalizar as exceções do Spring Security;
+- Testes unitários com Junit e Mokito;
+- Controle de acesso validando se a conta do usuário está ativa, bloqueada, expirada ou se a senha está expirada;
 
 ## :wrench: Tecnologias utilizadas
 

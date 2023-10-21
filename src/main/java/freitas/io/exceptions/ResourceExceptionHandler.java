@@ -25,6 +25,7 @@ import java.math.BigDecimal;
 import java.nio.file.AccessDeniedException;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Supplier;
 
 /**
@@ -130,6 +131,12 @@ public class ResourceExceptionHandler {
             InvalidFormatException invalidFormatException = (InvalidFormatException) mostSpecificCause;
             if (invalidFormatException.getTargetType() == BigDecimal.class) {
                 String error = "O campo " + invalidFormatException.getPath() + " deve ser um valor decimal";
+                HttpStatus status = HttpStatus.BAD_REQUEST;
+                StandardError err = new StandardError(ZonedDateTime.now(), status.value(), error, ex.getMessage(), request.getRequestURI());
+                return ResponseEntity.status(status).body(err);
+            }
+            if (invalidFormatException.getTargetType() == UUID.class) {
+                String error = "O campo ID contem valor invalido.";
                 HttpStatus status = HttpStatus.BAD_REQUEST;
                 StandardError err = new StandardError(ZonedDateTime.now(), status.value(), error, ex.getMessage(), request.getRequestURI());
                 return ResponseEntity.status(status).body(err);

@@ -1,12 +1,11 @@
 package freitas.io.service;
 
-import freitas.io.dto.UserDTO;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import freitas.io.dto.UserStatusRetornoDTO;
+import freitas.io.dto.UserStatusUpdateDTO;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.OptionalInt;
+import java.util.UUID;
 
 /**
  * @author Edson da Silva Freitas
@@ -21,5 +20,5 @@ public interface CRUDService<ID, T, DTO> {
     Optional<DTO> update(ID id, DTO entity);
     void delete(ID id);
 
-
+    Optional<UserStatusRetornoDTO> changeStatusUser(UUID id, UserStatusUpdateDTO entity);
 }

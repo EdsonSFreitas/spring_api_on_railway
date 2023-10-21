@@ -10,6 +10,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -21,10 +22,10 @@ import java.util.UUID;
  */
 @Getter
 @Setter
-@NoArgsConstructor
 @Builder
 @AllArgsConstructor
 @Entity(name = "tb_user")
+@NoArgsConstructor(force = true)
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -52,14 +53,27 @@ public class User implements UserDetails {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<News> news;
 
+    @Column(name = "is_enabled")
+    private boolean isEnabled = true;
+
+    @Column(name = "is_account_locked")
+    private boolean isAccountLocked = false;
+
+    @Column(name = "credentials_expiration")
+    private LocalDateTime credentialsExpiration;
+
+    @Column(name = "account_expiration")
+    private LocalDateTime accountExpiration;
+
     private Integer role;
+
 
     public RolesEnum getRole() {
         return RolesEnum.valueOf(role);
     }
 
     public void setRole(RolesEnum role) {
-        if(role != null) {
+        if (role != null) {
             this.role = role.getCode();
         }
     }
@@ -81,21 +95,67 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return true;
+        return accountExpiration == null || !accountExpiration.isBefore(LocalDateTime.now());
+        /*if (accountExpiration == null) {
+            return true;
+        } else {
+            LocalDateTime now = LocalDateTime.now();
+            if (accountExpiration.isBefore(now)) {
+                return false;
+            } else {
+                return true;
+            }
+        }*/
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return !isAccountLocked;
+        /*if (isAccountLocked) {
+            return false;
+        } else {
+            return true;
+        }*/
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true;
+        return credentialsExpiration == null || !credentialsExpiration.isBefore(LocalDateTime.now());
+        /*if (credentialsExpiration == null) {
+            return true;
+        } else {
+            LocalDateTime now = LocalDateTime.now();
+            if (credentialsExpiration.isBefore(now)) {
+                return false;
+            } else {
+                return true;
+            }
+        }*/
     }
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return isEnabled;
+        /*if (isEnabled) {
+            return true;
+        } else {
+            return false;
+        }*/
+    }
+
+    public void setAccountExpiration(LocalDateTime accountExpiration) {
+        this.accountExpiration = accountExpiration;
+    }
+
+    public void setAccountLocked(boolean accountLocked) {
+        isAccountLocked = accountLocked;
+    }
+
+    public void setCredentialsExpiration(LocalDateTime credentialsExpiration) {
+        this.credentialsExpiration = credentialsExpiration;
+    }
+
+    public void setEnabled(boolean enabled) {
+        isEnabled = enabled;
     }
 }

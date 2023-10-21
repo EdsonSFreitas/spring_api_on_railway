@@ -10,6 +10,8 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -45,6 +47,10 @@ public class CargaInicial implements CommandLineRunner {
                 .id(null)
                 .login("edson.s.freitas")
                 .password(passwordEncoder.encode("123456"))
+                .accountExpiration(LocalDateTime.now().plusYears(99))
+                .isEnabled(true)
+                .isAccountLocked(false)
+                .credentialsExpiration(LocalDateTime.now().plusYears(99))
                 .name("Edson Freitas")
                 .account(Account.builder()
                         .number("777")

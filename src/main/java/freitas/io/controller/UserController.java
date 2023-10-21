@@ -2,7 +2,8 @@ package freitas.io.controller;
 
 import freitas.io.domain.model.User;
 import freitas.io.dto.UserDTO;
-import freitas.io.enums.RolesEnum;
+import freitas.io.dto.UserStatusRetornoDTO;
+import freitas.io.dto.UserStatusUpdateDTO;
 import freitas.io.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -13,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -21,7 +21,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.io.Serial;
 import java.io.Serializable;
 import java.net.URI;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -121,5 +120,20 @@ public class UserController implements Serializable {
     public ResponseEntity<Void> delete(@RequestParam(value = "id") UUID id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+
+    @Operation(summary = "Change user status", description = "Block or Expire credential or account an existing user based on its ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Action completed successfully"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "404", description = "User not found")
+    })
+
+    @PutMapping("/changestatus")
+    public ResponseEntity<Optional<UserStatusRetornoDTO>> changeStatusUserById(@RequestBody UserStatusUpdateDTO updateStatus) {
+        final Optional<UserStatusRetornoDTO> userStatusRetornoDTO = service.changeStatusUser(updateStatus.id(), updateStatus);
+        return ResponseEntity.ok().body(userStatusRetornoDTO);
     }
 }

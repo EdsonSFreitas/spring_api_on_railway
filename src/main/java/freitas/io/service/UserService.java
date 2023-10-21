@@ -20,4 +20,6 @@ public interface UserService extends CRUDService<UUID, User, UserDTO> {
     List<User> findAll();
 
     Page<UserDTO> findAllOrderBy(Pageable pageable);
+
+    User findByLogin(String login);
 }
