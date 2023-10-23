@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,6 +27,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Entity(name = "tb_user")
 @NoArgsConstructor(force = true)
+@DynamicUpdate
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

@@ -1,15 +1,18 @@
 package freitas.io.service.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import freitas.io.domain.model.User;
 import freitas.io.domain.repository.UserRepository;
+import freitas.io.dto.UserCompleteDTO;
 import freitas.io.dto.UserDTO;
 import freitas.io.dto.UserStatusRetornoDTO;
 import freitas.io.dto.UserStatusUpdateDTO;
 import freitas.io.exceptions.BusinessRuleException;
 import freitas.io.exceptions.ResourceNotFoundException;
 import freitas.io.service.UserService;
+import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
+import org.modelmapper.TypeMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
@@ -46,9 +49,10 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    public Optional<UserDTO> findById(UUID id) {
+    @Override
+    public Optional<UserCompleteDTO> findById(UUID id) {
         final User user = this.repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
-        UserDTO userDTO = new UserDTO(user);
+        UserCompleteDTO userDTO = new UserCompleteDTO(user);
         return Optional.of(userDTO);
     }
 
@@ -115,7 +119,30 @@ public class UserServiceImpl implements UserService {
         final User userToChange = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
 
-        if (updateStatus.accountExpiration() != null) {
+
+        // Verifica se o ModelMapper já tem um mapeamento para UserStatusUpdateDTO e User
+        TypeMap<UserStatusUpdateDTO, User> typeMap =
+                modelMapper.getTypeMap(UserStatusUpdateDTO.class, User.class);
+
+        // Se não tiver, cria um novo mapeamento com a condição when
+        if (typeMap == null) {
+            modelMapper.addMappings(new PropertyMap<UserStatusUpdateDTO, User>() {
+                @Override
+                protected void configure() {
+                    when(Conditions.isNotNull()).map().setAccountExpiration(source.getAccountExpiration());
+                    when(Conditions.isNotNull()).map().setAccountLocked(source.getIsAccountLocked());
+                    when(Conditions.isNotNull()).map().setCredentialsExpiration(source.getCredentialsExpiration());
+                    when(Conditions.isNotNull()).map().setEnabled(source.getIsEnabled());
+                }
+            });
+        }
+
+        // Aplica o mapeamento no usuário
+        modelMapper.map(updateStatus, userToChange);
+
+        /*
+        // Dessa forma usando if é a mais simples, menos verbosa, fácil de entender e funciona mas mantive a versão mais complexa para fins de testes:
+		if (updateStatus.accountExpiration() != null) {
             userToChange.setAccountExpiration(updateStatus.accountExpiration());
         }
         if (updateStatus.isAccountLocked() != null) {
@@ -126,7 +153,7 @@ public class UserServiceImpl implements UserService {
         }
         if (updateStatus.isEnabled() != null) {
             userToChange.setEnabled(updateStatus.isEnabled());
-        }
+        }*/
 
         final User user = repository.save(userToChange);
 

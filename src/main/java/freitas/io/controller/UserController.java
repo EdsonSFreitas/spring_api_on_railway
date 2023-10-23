@@ -1,6 +1,7 @@
 package freitas.io.controller;
 
 import freitas.io.domain.model.User;
+import freitas.io.dto.UserCompleteDTO;
 import freitas.io.dto.UserDTO;
 import freitas.io.dto.UserStatusRetornoDTO;
 import freitas.io.dto.UserStatusUpdateDTO;
@@ -63,9 +64,9 @@ public class UserController implements Serializable {
             @ApiResponse(responseCode = "405", description = "Method Not Allowed")}
     )
     @GetMapping("/{id}")
-    public ResponseEntity<UserDTO> findById(@PathVariable UUID id) {
-        final Optional<UserDTO> userDTO = service.findById(id);
-        return userDTO.map(ResponseEntity::ok)
+    public ResponseEntity<UserCompleteDTO> findById(@PathVariable UUID id) {
+        final Optional<UserCompleteDTO> dto = service.findById(id);
+        return dto.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
@@ -76,8 +77,8 @@ public class UserController implements Serializable {
     )
     @GetMapping()
     @RolesAllowed({"USER"})
-    public ResponseEntity<UserDTO> findByIdParam(@RequestParam(value = "id") UUID id) {
-        Optional<UserDTO> optionalUser = service.findById(id);
+    public ResponseEntity<UserCompleteDTO> findByIdParam(@RequestParam(value = "id") UUID id) {
+        Optional<UserCompleteDTO> optionalUser = service.findById(id);
         return optionalUser.map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -131,9 +132,9 @@ public class UserController implements Serializable {
             @ApiResponse(responseCode = "404", description = "User not found")
     })
 
-    @PutMapping("/changestatus")
+    @PatchMapping("/changestatus")
     public ResponseEntity<Optional<UserStatusRetornoDTO>> changeStatusUserById(@RequestBody UserStatusUpdateDTO updateStatus) {
-        final Optional<UserStatusRetornoDTO> userStatusRetornoDTO = service.changeStatusUser(updateStatus.id(), updateStatus);
+        final Optional<UserStatusRetornoDTO> userStatusRetornoDTO = service.changeStatusUser(updateStatus.getId(), updateStatus);
         return ResponseEntity.ok().body(userStatusRetornoDTO);
     }
 }

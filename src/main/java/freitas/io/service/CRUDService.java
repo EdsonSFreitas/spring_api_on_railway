@@ -1,5 +1,6 @@
 package freitas.io.service;
 
+import freitas.io.dto.UserCompleteDTO;
 import freitas.io.dto.UserStatusRetornoDTO;
 import freitas.io.dto.UserStatusUpdateDTO;
 
@@ -15,7 +16,7 @@ import java.util.UUID;
 
 public interface CRUDService<ID, T, DTO> {
     List<T> findAll();
-    Optional<DTO> findById(ID id);
+    Optional<UserCompleteDTO> findById(ID id);
     DTO create(T entity);
     Optional<DTO> update(ID id, DTO entity);
     void delete(ID id);

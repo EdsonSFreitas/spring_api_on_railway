@@ -1,5 +1,8 @@
 package freitas.io.dto;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -9,10 +12,13 @@ import java.util.UUID;
  * {@code @project} api
  */
 
-public record UserStatusUpdateDTO(
-        UUID id, LocalDateTime accountExpiration, Boolean isAccountLocked, LocalDateTime credentialsExpiration,
-        Boolean isEnabled) {
-
-    public UserStatusUpdateDTO {
-    }
+@Data
+@NoArgsConstructor
+// Classe não foi criada como record devido ao ModelMapper para evitar campos null no request body
+public class UserStatusUpdateDTO {
+    private UUID id;
+    private LocalDateTime accountExpiration;
+    private Boolean isAccountLocked;
+    private LocalDateTime credentialsExpiration;
+    private Boolean isEnabled;
 }
