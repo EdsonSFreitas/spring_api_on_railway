@@ -9,13 +9,19 @@ spring:
       #ddl-auto: create
       ddl-auto: ${DLLTYPE}
 
+api:
+  security:
+    token:
+      secret: ${JWT_SECRET:SpringTokenizerRocks}
+      jwt.expiration_in_minutes: ${JWT_EXPIRATION_IN_MINUTES:10}
+
 module-name: API no serviço de Cloud da Railway
 api-version: 0.9.8
 api-description: API do Cloud Railway
 api-contact-name: Edson da Silva Freitas
 api-contact-url: http://github.com/edsonsfreitas
 api-contact-email: edson.s.freitas@gmail.com
-springdoc:
+spring-doc:
   api-docs:
     resolve-schema-properties: true
     swagger-ui:

@@ -11,7 +11,7 @@ spring:
   datasource:
     url: jdbc:h2:mem:testjunit
     username: sa
-    password: masterPwd%2.7
+    password:
   jpa:
     show-sql: true
     open-in-view: false
@@ -28,3 +28,9 @@ spring:
       settings:
         trace: false
         web-allow-others: false
+
+api:
+  security:
+    token:
+      secret: ${JWT_SECRET:SpringTokenizerRocks}
+      jwt.expiration_in_minutes: ${JWT_EXPIRATION_IN_MINUTES:10}

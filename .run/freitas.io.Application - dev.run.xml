@@ -4,6 +4,7 @@
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
     <envs>
       <env name="SPRING_PROFILES_ACTIVE" value="dev" />
+      <env name="JWT_EXPIRATION_IN_MINUTES" value="5" />
     </envs>
     <option name="MAIN_CLASS_NAME" value="freitas.io.Application" />
     <module name="api.main" />
