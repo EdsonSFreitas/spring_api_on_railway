@@ -198,19 +198,16 @@ classDiagram
   }
 ```
 
-
-## :books: Funcionalidades originais do projeto com Spring Boot versão 3
-- Endpoint para inserir usuário e conta bancária e um endpoint para buscar usuário por id.
-
-## :rocket: Funcionalidades que implementei como forma de estudo e prática de Spring Framework
+## :rocket: Funcionalidades implementadas:
 - Tratamento de erros via ResourceExceptionHandler;
 - Validação dos campos;
 - Validação da complexidade da senha por meio de anotação personalizada;
 - Endpoint para exibir todos os cadastros de usuários usando page/size/sort e limit retornando DTO;
-- JWT - Autenticação e Autorização;
+- JWT - Autenticação e Autorização com período de expiração e secret definidos via application.yml ao invés de ficar hardcoded;
 - HandlerExceptionResolver para capturar e personalizar as exceções do Spring Security;
 - Testes unitários com Junit e Mokito;
 - Controle de acesso validando se a conta do usuário está ativa, bloqueada, expirada ou se a senha está expirada;
+- Versionamento da API baseado no modelo path/URI para estruturar o versionamento e evitar problemas de compatibilidade com clientes existentes.
 
 ## :wrench: Tecnologias utilizadas
 
@@ -241,9 +238,11 @@ Pré-requisitos:
 
 ## :soon: Implementação futura
 
+- Avaliando...
+
 ## :dart: Status do projeto
 
 * Em andamento
 
-## :framed_picture: Screnshoot
-![Descrição da imagem](docs/Swagger-2023-10-21.png)
+## :framed_picture: Captura da tela do Swagger no RailWay após versionamento da API
+![Captura da tela da API no RailWay após versionamento](docs/Swagger-2023-10-26.png)

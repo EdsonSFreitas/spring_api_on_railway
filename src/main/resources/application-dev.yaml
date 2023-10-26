@@ -1,7 +1,7 @@
 logging:
   level:
-    root: INFO
-    org.springframework.security: INFO
+    root: DEBUG
+    org.springframework.security: DEBUG
 
 spring:
   security:
@@ -40,7 +40,7 @@ api:
       jwt.expiration_in_minutes: ${JWT_EXPIRATION_IN_MINUTES:10}
 
 module-name: API no serviço de Cloud da Railway
-api-version: 0.9.8
+api-version: 1.1.0
 api-description: API do Cloud Railway
 api-contact-name: Edson Freitas
 api-contact-url: http://github.com/edsonsfreitas

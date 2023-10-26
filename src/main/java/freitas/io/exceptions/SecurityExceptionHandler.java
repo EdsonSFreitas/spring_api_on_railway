@@ -1,6 +1,7 @@
 package freitas.io.exceptions;
 
 import com.auth0.jwt.exceptions.JWTDecodeException;
+import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -52,6 +53,12 @@ public class SecurityExceptionHandler {
         }
 
         if (ex instanceof SignatureException) {
+            errorDetail = ProblemDetail.forStatusAndDetail(HttpStatus.valueOf(403),
+                    ex.getMessage());
+            errorDetail.setProperty(properName, "JWT Signature not valid!");
+        }
+
+        if (ex instanceof SignatureVerificationException) {
             errorDetail = ProblemDetail.forStatusAndDetail(HttpStatus.valueOf(403),
                     ex.getMessage());
             errorDetail.setProperty(properName, "JWT Signature not valid!");

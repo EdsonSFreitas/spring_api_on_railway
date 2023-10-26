@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -26,6 +25,8 @@ import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
+
+import static org.springframework.security.web.util.matcher.RegexRequestMatcher.regexMatcher;
 
 /**
  * @author Edson da Silva Freitas
@@ -57,7 +58,7 @@ public class Configurations {
     private HandlerExceptionResolver exceptionResolver;
 
     @Bean
-    public FilterToken filter(){
+    public FilterToken filter() {
         return new FilterToken(exceptionResolver);
     }
 
@@ -78,8 +79,7 @@ public class Configurations {
     public SecurityFilterChain filterChain(HttpSecurity http, MvcRequestMatcher.Builder mvc) throws Exception {
         AntPathRequestMatcher[] allowUnSecuredPaths = getAntPathRequestMatchers();
 
-        MvcRequestMatcher mvcRequestMatcherLogin = mvc.pattern(HttpMethod.POST, "/login");
-        MvcRequestMatcher mvcRequestMatcherHome = mvc.pattern(HttpMethod.GET, "/home");
+        //MvcRequestMatcher mvcRequestMatcherLogin = mvc.pattern(HttpMethod.POST, "/login");
 
         /* Config necessaria para nao precisar desativar o CSRF para o endpoint /api/v1/user
         mas requisicao POST deve conter o TOKEN CSRF - https://www.baeldung.com/postman-send-csrf-token */
@@ -95,14 +95,20 @@ public class Configurations {
                         .csrfTokenRepository(tokenRepository)
                         .csrfTokenRequestHandler(requestHandler)
                 )
-                .csrf(csrf -> csrf.ignoringRequestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")))
-                .csrf(csrf -> csrf.ignoringRequestMatchers(mvcRequestMatcherLogin))
-                .csrf(csrf -> csrf.ignoringRequestMatchers(mvc.pattern(HttpMethod.PUT, "/api/v1/users/**")))
-                .csrf(csrf -> csrf.ignoringRequestMatchers(mvc.pattern(HttpMethod.PATCH, "/api/v1/users/changestatus/**")))
+                .csrf(csrf -> csrf.ignoringRequestMatchers(
+                        AntPathRequestMatcher.antMatcher("/h2-console/**")))
+                //.csrf(csrf -> csrf.ignoringRequestMatchers(mvcRequestMatcherLogin))
+                .csrf(csrf -> csrf.ignoringRequestMatchers(
+                        regexMatcher(HttpMethod.POST, "/api/v1.\\d+/login")))
+                .csrf(csrf -> csrf.ignoringRequestMatchers(
+                        mvc.pattern(HttpMethod.PUT, "/api/v1/users/**")))
+                .csrf(csrf -> csrf.ignoringRequestMatchers(
+                        //mvc.pattern(HttpMethod.PATCH, "/api/v1/users/changestatus/**")))
+                        regexMatcher(HttpMethod.POST, "/api/v1.\\d+/users/changestatus/.*")))
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((mvAauthorize) -> mvAauthorize
-                        .requestMatchers(mvcRequestMatcherLogin).permitAll()
-                        .requestMatchers(mvcRequestMatcherHome).permitAll()
+                        .requestMatchers(regexMatcher(HttpMethod.POST, "/api/v1.\\d+/login")).permitAll()
+                        .requestMatchers(regexMatcher(HttpMethod.GET, "/api/v1.\\d+/home")).permitAll()
                 )
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()

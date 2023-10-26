@@ -6,6 +6,7 @@ import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -73,5 +74,32 @@ public class OpenApi30Config {
                         .version(apiVersion)
                         .contact(contact)
                 );
+    }
+
+    @Bean
+    public GroupedOpenApi apiV1() {
+        return GroupedOpenApi.builder()
+                .group("api-1.0")
+                .pathsToExclude("/api/v2/**", "/v2/**", "/**/v3/**")
+                .pathsToMatch("/api/v1.0/**", "/v1/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi apiV1_1() {
+        return GroupedOpenApi.builder()
+                .group("api-1.1")
+                .pathsToExclude("/api/v1/**", "/v1/**", "/**/v2/**", "/**/v3/**")
+                .pathsToMatch("/api/v1.1/**", "/v1.1/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi apiV1_2() {
+        return GroupedOpenApi.builder()
+                .group("api-1.2")
+                .pathsToExclude("/api/v1.0/**", "/v1.1/**", "/**/v2/**", "/**/v3/**")
+                .pathsToMatch("/api/v1.2/**", "/v1.2/**")
+                .build();
     }
 }
